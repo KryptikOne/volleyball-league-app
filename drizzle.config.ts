@@ -4,14 +4,10 @@ import { env } from './src/env'
 export default defineConfig({
   schema: './src/db/schema.ts',
   out: './drizzle',
-  dialect: 'postgresql',
+  driver: 'pg',
   dbCredentials: {
-    url: env.DATABASE_URL,
-    ssl: 'require',
+    connectionString: env.DATABASE_URL,
   },
   verbose: true,
-  strict: true,
-  migrations: {
-    prefix: 'timestamp'
-  }
+  strict: true
 })
