@@ -7,8 +7,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Volleyball League Administration',
-  description: 'Manage your volleyball league with ease',
+  title: 'VBall League',
+  description: 'Managing volleyball leagues made easy',
 }
 
 export default function RootLayout({
