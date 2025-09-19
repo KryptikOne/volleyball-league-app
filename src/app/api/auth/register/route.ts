@@ -9,8 +9,17 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    // Validate input
-    const validatedData = insertUserSchema.parse(body)
+    // Extract password and remove from body for validation
+    const { password, ...rest } = body
+    if (!password || typeof password !== 'string' || password.length < 8) {
+      return NextResponse.json(
+        { error: 'Password must be at least 8 characters.' },
+        { status: 400 }
+      )
+    }
+
+    // Validate input (without password)
+    const validatedData = insertUserSchema.parse(rest)
 
     // Check if user already exists
     const existingUser = await db.query.users.findFirst({
@@ -25,7 +34,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(validatedData.password, 12)
+  const hashedPassword = await bcrypt.hash(password, 12)
 
     // Create user
     const [newUser] = await db.insert(users).values({

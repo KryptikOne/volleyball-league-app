@@ -127,6 +127,51 @@ export const playerStats = pgTable('player_stats', {
   createdDate: timestamp('created_date').defaultNow(),
 })
 
+// Playoff Brackets Table
+export const playoffBrackets = pgTable('playoff_brackets', {
+  id: uuid('bracket_id').primaryKey().defaultRandom(),
+  seasonId: uuid('season_id').notNull().references(() => seasons.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 100 }).notNull(),
+  description: text('description'),
+  bracketType: varchar('bracket_type', { length: 30 }).notNull().default('single_elimination'), // 'single_elimination', 'double_elimination', 'round_robin'
+  status: varchar('status', { length: 20 }).notNull().default('setup'), // 'setup', 'in_progress', 'completed'
+  startDate: date('start_date'),
+  endDate: date('end_date'),
+  createdDate: timestamp('created_date').defaultNow(),
+  updatedDate: timestamp('updated_date').defaultNow(),
+})
+
+// Playoff Teams Table (Teams participating in a specific bracket)
+export const playoffTeams = pgTable('playoff_teams', {
+  id: uuid('playoff_team_id').primaryKey().defaultRandom(),
+  playoffBracketId: uuid('playoff_bracket_id').notNull().references(() => playoffBrackets.id, { onDelete: 'cascade' }),
+  teamId: uuid('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
+  seed: integer('seed').notNull(), // 1 = best seed, 2 = second best, etc.
+  isActive: boolean('is_active').notNull().default(true),
+  createdDate: timestamp('created_date').defaultNow(),
+  updatedDate: timestamp('updated_date').defaultNow(),
+})
+
+// Playoff Games Table (Individual games within a playoff bracket)
+export const playoffGames = pgTable('playoff_games', {
+  id: uuid('playoff_game_id').primaryKey().defaultRandom(),
+  playoffBracketId: uuid('playoff_bracket_id').notNull().references(() => playoffBrackets.id, { onDelete: 'cascade' }),
+  round: integer('round').notNull(), // 1 = first round, 2 = second round, etc.
+  position: integer('position').notNull(), // Position within the round
+  homeTeamId: uuid('home_team_id').references(() => teams.id),
+  awayTeamId: uuid('away_team_id').references(() => teams.id),
+  winnerId: uuid('winner_id').references(() => teams.id),
+  gameDate: date('game_date'),
+  gameTime: time('game_time'),
+  courtLocation: varchar('court_location', { length: 255 }),
+  status: varchar('status', { length: 20 }).default('scheduled'), // Reuse your existing game status values
+  homeTeamScore: integer('home_team_score').default(0),
+  awayTeamScore: integer('away_team_score').default(0),
+  notes: text('notes'),
+  createdDate: timestamp('created_date').defaultNow(),
+  updatedDate: timestamp('updated_date').defaultNow(),
+})
+
 export const leagueAdministrators = pgTable('league_administrators', {
   id: uuid('admin_id').primaryKey().defaultRandom(),
   leagueId: uuid('league_id').notNull().references(() => leagues.id, { onDelete: 'cascade' }),
@@ -173,6 +218,7 @@ export const seasonsRelations = relations(seasons, ({ one, many }) => ({
   }),
   teams: many(teams),
   games: many(games),
+  playoffBrackets: many(playoffBrackets),
 }))
 
 export const teamsRelations = relations(teams, ({ one, many }) => ({
@@ -191,6 +237,10 @@ export const teamsRelations = relations(teams, ({ one, many }) => ({
   awayGames: many(games, {
     relationName: 'awayTeam',
   }),
+  playoffTeams: many(playoffTeams),
+  playoffHomeGames: many(playoffGames, { relationName: 'playoffHomeTeam' }),
+  playoffAwayGames: many(playoffGames, { relationName: 'playoffAwayTeam' }),
+  playoffWins: many(playoffGames, { relationName: 'playoffWinner' }),
 }))
 
 export const teamPlayersRelations = relations(teamPlayers, ({ one }) => ({
@@ -223,19 +273,66 @@ export const gamesRelations = relations(games, ({ one, many }) => ({
   playerStats: many(playerStats),
 }))
 
+// Playoff Brackets Relations
+export const playoffBracketsRelations = relations(playoffBrackets, ({ one, many }) => ({
+  season: one(seasons, {
+    fields: [playoffBrackets.seasonId],
+    references: [seasons.id],
+  }),
+  playoffTeams: many(playoffTeams),
+  playoffGames: many(playoffGames),
+}))
+
+// Playoff Teams Relations
+export const playoffTeamsRelations = relations(playoffTeams, ({ one }) => ({
+  playoffBracket: one(playoffBrackets, {
+    fields: [playoffTeams.playoffBracketId],
+    references: [playoffBrackets.id],
+  }),
+  team: one(teams, {
+    fields: [playoffTeams.teamId],
+    references: [teams.id],
+  }),
+}))
+
+// Playoff Games Relations
+export const playoffGamesRelations = relations(playoffGames, ({ one }) => ({
+  playoffBracket: one(playoffBrackets, {
+    fields: [playoffGames.playoffBracketId],
+    references: [playoffBrackets.id],
+  }),
+  homeTeam: one(teams, {
+    fields: [playoffGames.homeTeamId],
+    references: [teams.id],
+    relationName: 'playoffHomeTeam',
+  }),
+  awayTeam: one(teams, {
+    fields: [playoffGames.awayTeamId],
+    references: [teams.id],
+    relationName: 'playoffAwayTeam',
+  }),
+  winner: one(teams, {
+    fields: [playoffGames.winnerId],
+    references: [teams.id],
+    relationName: 'playoffWinner',
+  }),
+}))
+
 // Zod schemas for validation
 export const insertUserSchema = createInsertSchema(users, {
   email: z.string().email(),
+  passwordHash: z.string().min(8, 'Password must be at least 8 characters'),
   gender: z.enum(['male', 'female', 'non-binary', 'prefer-not-to-say']).optional(),
   skillLevel: z.enum(['beginner', 'intermediate', 'advanced', 'elite']).optional(),
   heightInches: z.number().min(48).max(96).optional(),
-  phone: z.string().regex(/^\+?[\d\s-()]+$/).optional(),
+  phone: z.string().regex(/^[+]?[\d\s\-()]{7,20}$/).optional(),
   isAdministrator: z.boolean().default(false),
   isActive: z.boolean().default(true),
 }).omit({
   id: true,
   createdDate: true,
   updatedDate: true,
+  passwordHash: true,
 })
 
 export const selectUserSchema = createSelectSchema(users)
@@ -285,9 +382,42 @@ export const insertGameSchema = createInsertSchema(games, {
   updatedDate: true,
 })
 
+export const insertPlayoffBracketSchema = createInsertSchema(playoffBrackets, {
+  bracketType: z.enum(['single_elimination', 'double_elimination', 'round_robin']),
+  status: z.enum(['setup', 'in_progress', 'completed']).default('setup'),
+  startDate: z.string().transform((str) => new Date(str)).optional(),
+  endDate: z.string().transform((str) => new Date(str)).optional(),
+}).omit({
+  id: true,
+  createdDate: true,
+  updatedDate: true,
+})
+
+export const insertPlayoffTeamSchema = createInsertSchema(playoffTeams, {
+  isActive: z.boolean().default(true),
+}).omit({
+  id: true,
+  createdDate: true,
+  updatedDate: true,
+})
+
+export const insertPlayoffGameSchema = createInsertSchema(playoffGames, {
+  gameDate: z.string().transform((str) => new Date(str)).optional(),
+  status: z.enum(['scheduled', 'in_progress', 'completed', 'cancelled', 'postponed']).default('scheduled'),
+}).omit({
+  id: true,
+  createdDate: true,
+  updatedDate: true,
+})
+
+
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 export type League = typeof leagues.$inferSelect
 export type Season = typeof seasons.$inferSelect
 export type Team = typeof teams.$inferSelect
 export type Game = typeof games.$inferSelect
+export type PlayoffBracket = typeof playoffBrackets.$inferSelect
+export type NewPlayoffBracket = typeof playoffBrackets.$inferInsert
+export type PlayoffTeam = typeof playoffTeams.$inferSelect
+export type PlayoffGame = typeof playoffGames.$inferSelect

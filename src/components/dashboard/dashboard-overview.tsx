@@ -195,7 +195,7 @@ async function DashboardStatsContent({ userId, isAdmin }: { userId: string; isAd
                       {game.homeTeamScore} - {game.awayTeamScore}
                     </div>
                     <div className="text-sm text-muted-foreground capitalize">
-                      {game.status.replace('_', ' ')}
+                      {(game.status ?? '').replace('_', ' ')}
                     </div>
                   </div>
                 </div>

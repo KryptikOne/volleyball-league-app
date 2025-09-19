@@ -6,6 +6,7 @@ import { Users, Trophy, Calendar, BarChart3, Settings, Database } from 'lucide-r
 import { db } from '@/db'
 import { count } from 'drizzle-orm'
 import { users, leagues, teams, games } from '@/db/schema'
+import Link from 'next/link'
 
 async function getAdminStats() {
   const [userCount] = await db.select({ count: count() }).from(users)
@@ -106,15 +107,19 @@ export default async function AdminPage() {
                   League Administration
                 </CardTitle>
                 <CardDescription>
-                  Create and manage leagues, seasons, and settings
+                  Manage leagues, seasons, teams, and schedules
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full">Manage Leagues</Button>
+                <Button asChild className="w-full">
+                  <Link href="/dashboard/admin/leagues">
+                    Manage Leagues
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
 
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <BarChart3 className="h-5 w-5 mr-2" />
@@ -170,9 +175,13 @@ export default async function AdminPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full">Manage Games</Button>
+                <Button asChild className="w-full">
+                  <Link href="/dashboard/admin/leagues?tab=games">
+                    Manage Games
+                  </Link>
+                </Button>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </main>

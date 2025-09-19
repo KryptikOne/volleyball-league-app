@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { User, Mail, Phone, MapPin, Ruler, Shield } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Ruler, Shield, MarsStroke } from 'lucide-react'
 import { db } from '@/db'
 import { eq } from 'drizzle-orm'
 import { users } from '@/db/schema'
@@ -82,7 +82,12 @@ export default async function ProfilePage() {
                   <Input id="phone" value={profile.phone || 'Not provided'} readOnly />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="address">Address</Label>
+                  <Input id="address" value={profile.address || 'Not provided'} readOnly />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
                   <div>
                     <Label htmlFor="city">City</Label>
                     <Input id="city" value={profile.city || 'Not provided'} readOnly />
@@ -90,6 +95,10 @@ export default async function ProfilePage() {
                   <div>
                     <Label htmlFor="state">State</Label>
                     <Input id="state" value={profile.state || 'Not provided'} readOnly />
+                  </div>
+                  <div>
+                    <Label htmlFor="zip">Zip</Label>
+                    <Input id="zip" value={profile.zipCode || 'Not provided'} readOnly />
                   </div>
                 </div>
 
@@ -108,7 +117,7 @@ export default async function ProfilePage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <Shield className="h-4 w-4 mr-2" />
-                      <span className="text-sm">Role</span>
+                      <span className="text-sm">Account Type</span>
                     </div>
                     <Badge variant={profile.isAdministrator ? 'default' : 'secondary'}>
                       {profile.isAdministrator ? 'Administrator' : 'Player'}
@@ -121,7 +130,7 @@ export default async function ProfilePage() {
                       <span className="text-sm">Member Since</span>
                     </div>
                     <span className="text-sm text-muted-foreground">
-                      {new Date(profile.createdDate).toLocaleDateString()}
+                      {profile.createdDate ? new Date(profile.createdDate).toLocaleDateString() : ''}
                     </span>
                   </div>
                 </CardContent>
@@ -155,7 +164,10 @@ export default async function ProfilePage() {
 
                   {profile.gender && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Gender</span>
+                      <div className="flex items-center">
+                        <MarsStroke className="h-4 w-4 mr-2" />
+                        <span className="text-sm">Gender</span>
+                      </div>
                       <span className="text-sm text-muted-foreground capitalize">
                         {profile.gender.replace('-', ' ')}
                       </span>

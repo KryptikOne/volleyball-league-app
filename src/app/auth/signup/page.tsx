@@ -86,7 +86,7 @@ export default function SignUpPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center">Create Account</CardTitle>
           <CardDescription className="text-center">
-            Join our volleyball league community
+            Join our volleyball community<br />We're a fun-loving bunch that loves to play and socialize!
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -99,11 +99,12 @@ export default function SignUpPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
+                <Label htmlFor="firstName">First Name <span className="required text-red-700">*</span></Label>
                 <Input
                   {...form.register('firstName')}
-                  placeholder="Enter your first name"
+                  placeholder="Jon"
                   disabled={isLoading}
+                  required
                 />
                 {form.formState.errors.firstName && (
                   <p className="text-sm text-red-500">
@@ -113,11 +114,12 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name</Label>
+                <Label htmlFor="lastName">Last Name <span className="required text-red-700">*</span></Label>
                 <Input
                   {...form.register('lastName')}
-                  placeholder="Enter your last name"
+                  placeholder="Snow"
                   disabled={isLoading}
+                  required
                 />
                 {form.formState.errors.lastName && (
                   <p className="text-sm text-red-500">
@@ -128,12 +130,13 @@ export default function SignUpPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email <span className="required text-red-700">*</span></Label>
               <Input
                 {...form.register('email')}
                 type="email"
-                placeholder="Enter your email"
+                placeholder="email@example.com"
                 disabled={isLoading}
+                required
               />
               {form.formState.errors.email && (
                 <p className="text-sm text-red-500">
@@ -144,11 +147,11 @@ export default function SignUpPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Password <span className="required text-red-700">*</span></Label>
                 <Input
                   {...form.register('password')}
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Y0ur Pa$$w0rD"
                   disabled={isLoading}
                 />
                 {form.formState.errors.password && (
@@ -159,11 +162,11 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirm Password <span className="required text-red-700">*</span></Label>
                 <Input
                   {...form.register('confirmPassword')}
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder="Y0ur Pa$$w0rD"
                   disabled={isLoading}
                 />
                 {form.formState.errors.confirmPassword && (
@@ -179,7 +182,7 @@ export default function SignUpPage() {
                 <Label htmlFor="phone">Phone (Optional)</Label>
                 <Input
                   {...form.register('phone')}
-                  placeholder="Enter your phone number"
+                  placeholder="555-294-8710"
                   disabled={isLoading}
                 />
                 {form.formState.errors.phone && (
@@ -190,14 +193,15 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="heightInches">Height (inches, optional)</Label>
+                <Label htmlFor="heightInches">Height (inches) <span className="required text-red-700">*</span></Label>
                 <Input
                   {...form.register('heightInches', { valueAsNumber: true })}
                   type="number"
                   min="48"
                   max="96"
-                  placeholder="e.g. 72"
+                  placeholder="72"
                   disabled={isLoading}
+                  required
                 />
                 {form.formState.errors.heightInches && (
                   <p className="text-sm text-red-500">
@@ -209,15 +213,14 @@ export default function SignUpPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Gender (Optional)</Label>
-                <Select onValueChange={(value) => form.setValue('gender', value as any)}>
+                <Label>Gender <span className="required text-red-700">*</span></Label>
+                <Select onValueChange={(value) => form.setValue('gender', value as any)} required>
                   <SelectTrigger>
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="male">Male</SelectItem>
                     <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="non-binary">Non-binary</SelectItem>
                     <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
                   </SelectContent>
                 </Select>
