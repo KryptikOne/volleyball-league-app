@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest, { params }: { params: { leagueId
         name,
         description,
         isActive,
-        modifiedDate: new Date(),
+        updatedDate: new Date(),
       })
       .where(eq(leagues.id, params.leagueId))
       .returning()

@@ -80,7 +80,7 @@ export async function POST(request: NextRequest, { params }: { params: { bracket
       seed: index + 1, // Seed 1 = best team, seed 2 = second best, etc.
       isActive: true,
       createdDate: new Date(),
-      modifiedDate: new Date(),
+      updatedData: new Date(),
     }))
 
     const insertedTeams = await db.insert(playoffTeams).values(teamsToInsert).returning()
@@ -114,7 +114,7 @@ export async function PUT(request: NextRequest, { params }: { params: { bracketI
           .set({
             seed: team.seed,
             isActive: team.isActive ?? true,
-            modifiedDate: new Date(),
+            updatedData: new Date(),
           })
           .where(eq(playoffTeams.id, team.id))
       }

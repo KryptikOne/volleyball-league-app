@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
         jerseyNumber: jerseyNumber || null,
         isActive: true,
         createdDate: new Date(),
-        modifiedDate: new Date(),
+        updatedData: new Date(),
       })
       .returning()
 

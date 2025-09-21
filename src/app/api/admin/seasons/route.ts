@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         registrationEndDate: registrationEndDate ? new Date(registrationEndDate) : null,
         maxTeams: maxTeams || null,
         createdDate: new Date(),
-        modifiedDate: new Date(),
+        updatedData: new Date(),
       })
       .returning()
 

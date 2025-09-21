@@ -10,7 +10,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Plus, Edit, Trash2, Calendar, Clock, MapPin, Trophy } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -76,27 +75,31 @@ export function GamesManagement() {
   }, [])
 
   useEffect(() => {
-    if (selectedSeason) {
-      fetchTeamsForSeason(selectedSeason)
+    if (gameFormData.seasonId) {
+      fetchTeamsForSeason(gameFormData.seasonId)
     }
-  }, [selectedSeason])
+  }, [gameFormData.seasonId])
 
   const fetchData = async () => {
     try {
-      const [gamesResponse, seasonsResponse] = await Promise.all([
-        fetch('/api/admin/games'),
-        fetch('/api/admin/seasons')
+      const [gamesResponse] = await Promise.all([
+        fetch('/api/admin/games')
       ])
 
-      const [gamesData, seasonsData] = await Promise.all([
-        gamesResponse.json(),
-        seasonsResponse.json()
-      ])
+      const gamesData = await gamesResponse.json()
+      setGames(gamesData.games || [])
 
-      setGames(gamesData.games)
-      setSeasons(seasonsData.seasons)
+      // Extract unique seasons from games
+      const uniqueSeasons = gamesData.games?.reduce((acc: Season[], game: Game) => {
+        if (!acc.find(s => s.id === game.homeTeam.season.id)) {
+          acc.push(game.homeTeam.season)
+        }
+        return acc
+      }, []) || []
+      setSeasons(uniqueSeasons)
 
     } catch (error) {
+      console.error('Error fetching data:', error)
       toast.error('Failed to fetch data')
     } finally {
       setLoading(false)
@@ -107,8 +110,9 @@ export function GamesManagement() {
     try {
       const response = await fetch(`/api/admin/seasons/${seasonId}/teams`)
       const data = await response.json()
-      setTeams(data.teams)
+      setTeams(data.teams || [])
     } catch (error) {
+      console.error('Error fetching teams:', error)
       toast.error('Failed to fetch teams')
     }
   }
@@ -136,6 +140,7 @@ export function GamesManagement() {
         toast.error(error.error || 'Failed to create game')
       }
     } catch (error) {
+      console.error('Error creating game:', error)
       toast.error('Failed to create game')
     }
   }
@@ -166,6 +171,7 @@ export function GamesManagement() {
         toast.error(error.error || 'Failed to update game')
       }
     } catch (error) {
+      console.error('Error updating game:', error)
       toast.error('Failed to update game')
     }
   }
@@ -188,6 +194,7 @@ export function GamesManagement() {
         toast.error(error.error || 'Failed to delete game')
       }
     } catch (error) {
+      console.error('Error deleting game:', error)
       toast.error('Failed to delete game')
     }
   }
@@ -215,14 +222,13 @@ export function GamesManagement() {
         toast.error(error.error || 'Failed to generate schedule')
       }
     } catch (error) {
+      console.error('Error generating schedule:', error)
       toast.error('Failed to generate schedule')
     }
   }
 
   const openEditGameDialog = (game: Game) => {
     setEditingGame(game)
-    setSelectedSeason(game.seasonId)
-    fetchTeamsForSeason(game.seasonId)
     setGameFormData({
       seasonId: game.seasonId,
       homeTeamId: game.homeTeamId,
@@ -235,6 +241,8 @@ export function GamesManagement() {
       awayTeamScore: game.awayTeamScore ? game.awayTeamScore.toString() : '',
       notes: game.notes || ''
     })
+    // Fetch teams for this season
+    fetchTeamsForSeason(game.seasonId)
     setIsEditGameDialogOpen(true)
   }
 
@@ -252,7 +260,6 @@ export function GamesManagement() {
       notes: ''
     })
     setEditingGame(null)
-    setSelectedSeason('')
     setTeams([])
   }
 
@@ -313,7 +320,7 @@ export function GamesManagement() {
               <div className="space-y-4">
                 <div>
                   <Label>Select Season</Label>
-                  <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+                  <Select value={selectedSeason || undefined} onValueChange={(value) => setSelectedSeason(value || '')}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select season" />
                     </SelectTrigger>
@@ -327,7 +334,9 @@ export function GamesManagement() {
                   </Select>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={handleBulkScheduleGeneration}>Generate Schedule</Button>
+                  <Button onClick={handleBulkScheduleGeneration} disabled={!selectedSeason}>
+                    Generate Schedule
+                  </Button>
                   <Button variant="outline" onClick={() => setIsBulkScheduleDialogOpen(false)}>
                     Cancel
                   </Button>
@@ -355,11 +364,8 @@ export function GamesManagement() {
                   <div>
                     <Label htmlFor="seasonId">Season *</Label>
                     <Select
-                      value={gameFormData.seasonId}
-                      onValueChange={(value) => {
-                        setGameFormData({...gameFormData, seasonId: value})
-                        setSelectedSeason(value)
-                      }}
+                      value={gameFormData.seasonId || undefined}
+                      onValueChange={(value) => setGameFormData({...gameFormData, seasonId: value || '', homeTeamId: '', awayTeamId: ''})}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select season" />
@@ -397,11 +403,12 @@ export function GamesManagement() {
                   <div>
                     <Label htmlFor="homeTeamId">Home Team *</Label>
                     <Select
-                      value={gameFormData.homeTeamId}
-                      onValueChange={(value) => setGameFormData({...gameFormData, homeTeamId: value})}
+                      value={gameFormData.homeTeamId || undefined}
+                      onValueChange={(value) => setGameFormData({...gameFormData, homeTeamId: value || ''})}
+                      disabled={!gameFormData.seasonId}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select home team" />
+                        <SelectValue placeholder={gameFormData.seasonId ? "Select home team" : "Select season first"} />
                       </SelectTrigger>
                       <SelectContent>
                         {teams.map((team) => (
@@ -415,11 +422,12 @@ export function GamesManagement() {
                   <div>
                     <Label htmlFor="awayTeamId">Away Team *</Label>
                     <Select
-                      value={gameFormData.awayTeamId}
-                      onValueChange={(value) => setGameFormData({...gameFormData, awayTeamId: value})}
+                      value={gameFormData.awayTeamId || undefined}
+                      onValueChange={(value) => setGameFormData({...gameFormData, awayTeamId: value || ''})}
+                      disabled={!gameFormData.seasonId}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select away team" />
+                        <SelectValue placeholder={gameFormData.seasonId ? "Select away team" : "Select season first"} />
                       </SelectTrigger>
                       <SelectContent>
                         {teams.filter(team => team.id !== gameFormData.homeTeamId).map((team) => (
@@ -501,7 +509,9 @@ export function GamesManagement() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button type="submit">Create Game</Button>
+                  <Button type="submit" disabled={!gameFormData.seasonId || !gameFormData.homeTeamId || !gameFormData.awayTeamId || !gameFormData.gameDate}>
+                    Create Game
+                  </Button>
                   <Button
                     type="button"
                     variant="outline"
@@ -526,12 +536,12 @@ export function GamesManagement() {
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 items-center">
-            <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+            <Select value={selectedSeason || undefined} onValueChange={(value) => setSelectedSeason(value || '')}>
               <SelectTrigger className="w-80">
                 <SelectValue placeholder="All seasons" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All seasons</SelectItem>
+                <SelectItem value="all-seasons">All seasons</SelectItem>
                 {seasons.map((season) => (
                   <SelectItem key={season.id} value={season.id}>
                     {season.league.name} - {season.name}
@@ -677,11 +687,8 @@ export function GamesManagement() {
               <div>
                 <Label htmlFor="editSeasonId">Season *</Label>
                 <Select
-                  value={gameFormData.seasonId}
-                  onValueChange={(value) => {
-                    setGameFormData({...gameFormData, seasonId: value})
-                    setSelectedSeason(value)
-                  }}
+                  value={gameFormData.seasonId || undefined}
+                  onValueChange={(value) => setGameFormData({...gameFormData, seasonId: value || '', homeTeamId: '', awayTeamId: ''})}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select season" />
@@ -719,8 +726,8 @@ export function GamesManagement() {
               <div>
                 <Label htmlFor="editHomeTeamId">Home Team *</Label>
                 <Select
-                  value={gameFormData.homeTeamId}
-                  onValueChange={(value) => setGameFormData({...gameFormData, homeTeamId: value})}
+                  value={gameFormData.homeTeamId || undefined}
+                  onValueChange={(value) => setGameFormData({...gameFormData, homeTeamId: value || ''})}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select home team" />
@@ -737,8 +744,8 @@ export function GamesManagement() {
               <div>
                 <Label htmlFor="editAwayTeamId">Away Team *</Label>
                 <Select
-                  value={gameFormData.awayTeamId}
-                  onValueChange={(value) => setGameFormData({...gameFormData, awayTeamId: value})}
+                  value={gameFormData.awayTeamId || undefined}
+                  onValueChange={(value) => setGameFormData({...gameFormData, awayTeamId: value || ''})}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select away team" />
@@ -806,7 +813,7 @@ export function GamesManagement() {
                     min="0"
                     value={gameFormData.awayTeamScore}
                     onChange={(e) => setGameFormData({...gameFormData, awayTeamScore: e.target.value})}
-                  />
+                    />
                 </div>
               </div>
             )}

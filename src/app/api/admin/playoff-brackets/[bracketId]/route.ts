@@ -17,7 +17,7 @@ export async function PUT(request: NextRequest, { params }: { params: { bracketI
         bracketType,
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
-        modifiedDate: new Date(),
+        updatedData: new Date(),
       })
       .where(eq(playoffBrackets.id, params.bracketId))
       .returning()

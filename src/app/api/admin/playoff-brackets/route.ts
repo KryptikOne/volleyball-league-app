@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
         createdDate: new Date(),
-        modifiedDate: new Date(),
+        updatedData: new Date(),
       })
       .returning()
 

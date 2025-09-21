@@ -99,8 +99,8 @@ export default async function GamesPage() {
                           {game.season.league.name} - {game.season.name}
                         </p>
                       </div>
-                      <Badge className={getStatusColor(game.status)}>
-                        {game.status.replace('_', ' ')}
+                      <Badge className={getStatusColor(game.status ?? '')}>
+                        {(game.status ?? '').replace('_', ' ')}
                       </Badge>
                     </div>
 

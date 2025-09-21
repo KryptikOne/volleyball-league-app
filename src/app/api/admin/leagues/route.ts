@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   try {
     await requireAdmin()
 
-    const { name, description, isActive } = await request.json()
+    const { name, description, administratorId, isActive } = await request.json()
 
     if (!name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
@@ -42,8 +42,9 @@ export async function POST(request: NextRequest) {
         name,
         description: description || null,
         isActive: isActive ?? true,
+        administratorId: administratorId || null,
         createdDate: new Date(),
-        modifiedDate: new Date(),
+        updatedDate: new Date(),
       })
       .returning()
 

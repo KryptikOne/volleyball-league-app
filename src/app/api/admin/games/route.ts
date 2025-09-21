@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         awayTeamScore: awayTeamScore || null,
         notes: notes || null,
         createdDate: new Date(),
-        modifiedDate: new Date(),
+        updatedDate: new Date(),
       })
       .returning()
 
