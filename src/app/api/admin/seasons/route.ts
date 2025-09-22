@@ -3,6 +3,25 @@ import { requireAdmin } from '@/lib/auth-utils'
 import { db } from '@/db'
 import { seasons } from '@/db/schema'
 
+export async function GET() {
+  try {
+    await requireAdmin()
+
+    const allSeasons = await db.query.seasons.findMany({
+      with: {
+        teams: true,
+        games: true,
+        league: true,
+      },
+      orderBy: (seasons, { desc }) => [desc(seasons.startDate)],
+    })
+
+    return NextResponse.json({ seasons: allSeasons })
+  } catch (error) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     await requireAdmin()

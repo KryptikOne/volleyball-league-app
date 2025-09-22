@@ -72,6 +72,7 @@ export function GamesManagement() {
 
   useEffect(() => {
     fetchData()
+    fetchSeasons()
   }, [])
 
   useEffect(() => {
@@ -80,23 +81,28 @@ export function GamesManagement() {
     }
   }, [gameFormData.seasonId])
 
+  const fetchSeasons = async () => {
+    try {
+      const [seasonsResponse] = await Promise.all([
+        fetch('/api/admin/seasons')
+      ])
+
+      const seasonsData = await seasonsResponse.json()
+      setSeasons(seasonsData.seasons || [])
+
+    } catch (error) {
+      console.error('Error fetching seasons:', error)
+    }
+  }
+
   const fetchData = async () => {
     try {
       const [gamesResponse] = await Promise.all([
         fetch('/api/admin/games')
       ])
 
-      const gamesData = await gamesResponse.json()
-      setGames(gamesData.games || [])
-
-      // Extract unique seasons from games
-      const uniqueSeasons = gamesData.games?.reduce((acc: Season[], game: Game) => {
-        if (!acc.find(s => s.id === game.homeTeam.season.id)) {
-          acc.push(game.homeTeam.season)
-        }
-        return acc
-      }, []) || []
-      setSeasons(uniqueSeasons)
+  const gamesData = await gamesResponse.json()
+  setGames(gamesData.games || [])
 
     } catch (error) {
       console.error('Error fetching data:', error)
