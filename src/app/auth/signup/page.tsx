@@ -179,17 +179,17 @@ export default function SignUpPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone (Optional)</Label>
-                <Input
-                  {...form.register('phone')}
-                  placeholder="555-294-8710"
-                  disabled={isLoading}
-                />
-                {form.formState.errors.phone && (
-                  <p className="text-sm text-red-500">
-                    {form.formState.errors.phone.message}
-                  </p>
-                )}
+                <Label>Gender <span className="required text-red-700">*</span></Label>
+                <Select onValueChange={(value) => form.setValue('gender', value as any)} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
@@ -213,21 +213,21 @@ export default function SignUpPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Gender <span className="required text-red-700">*</span></Label>
-                <Select onValueChange={(value) => form.setValue('gender', value as any)} required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select gender" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  {...form.register('phone')}
+                  placeholder="555-294-8710"
+                  disabled={isLoading}
+                />
+                {form.formState.errors.phone && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.phone.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label>Skill Level (Optional)</Label>
+                <Label>Skill Level</Label>
                 <Select onValueChange={(value) => form.setValue('skillLevel', value as any)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select skill level" />

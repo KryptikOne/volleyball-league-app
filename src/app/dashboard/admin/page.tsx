@@ -38,7 +38,7 @@ export default async function AdminPage() {
             </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 mb-8">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -84,22 +84,7 @@ export default async function AdminPage() {
             </Card>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Users className="h-5 w-5 mr-2" />
-                  User Management
-                </CardTitle>
-                <CardDescription>
-                  Manage user accounts, roles, and permissions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full">Manage Users</Button>
-              </CardContent>
-            </Card>
-
+          <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -116,6 +101,21 @@ export default async function AdminPage() {
                     Manage Leagues
                   </Link>
                 </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Users className="h-5 w-5 mr-2" />
+                  User Management
+                </CardTitle>
+                <CardDescription>
+                  Manage user accounts, roles, and permissions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full">Manage Users</Button>
               </CardContent>
             </Card>
 

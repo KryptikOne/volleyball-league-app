@@ -38,7 +38,7 @@ export function DashboardNav({ user }: DashboardNavProps) {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
-    { name: 'Leagues', href: '/dashboard/leagues', icon: Trophy },
+    // { name: 'Leagues', href: '/dashboard/leagues', icon: Trophy },
     { name: 'Teams', href: '/dashboard/teams', icon: Users },
     { name: 'Games', href: '/dashboard/games', icon: Calendar },
   ]
