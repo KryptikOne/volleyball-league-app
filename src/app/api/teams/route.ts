@@ -65,11 +65,13 @@ export async function POST(request: NextRequest) {
 
     const validatedData = insertTeamSchema.parse({
       ...body,
-      teamCode,
       captainId: session.user.id,
     })
 
-    const [newTeam] = await db.insert(teams).values(validatedData).returning()
+    const [newTeam] = await db.insert(teams).values({
+      ...validatedData,
+      teamCode,
+    }).returning()
 
     // Add creator as team captain
     await db.insert(teamPlayers).values({

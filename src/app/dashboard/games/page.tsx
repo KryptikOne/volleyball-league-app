@@ -71,7 +71,7 @@ export default async function GamesPage() {
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Games</h1>
             <p className="text-muted-foreground">
-              Your team's game schedule and results
+              Your team&apos;s game schedule and results
             </p>
           </div>
 
@@ -81,7 +81,7 @@ export default async function GamesPage() {
                 <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium mb-2">No games scheduled</h3>
                 <p className="text-muted-foreground">
-                  Your teams don't have any games scheduled yet.
+                  Your teams don&apos;t have any games scheduled yet.
                 </p>
               </CardContent>
             </Card>

@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { eq, and } from 'drizzle-orm'
 import { db } from '@/db'
-import { leagues, leagueAdministrators } from '@/db/schema'
+import { leagues, leagueAdministrators, seasons } from '@/db/schema'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -23,7 +23,7 @@ async function getLeagues(userId: string, isAdmin: boolean) {
           columns: { firstName: true, lastName: true }
         },
         seasons: {
-          where: (seasons, { eq }) => eq(seasons.isActive, true),
+          where: eq(seasons.isActive, true),
         },
       },
       orderBy: (leagues, { desc }) => [desc(leagues.createdDate)],
@@ -42,7 +42,7 @@ async function getLeagues(userId: string, isAdmin: boolean) {
               columns: { firstName: true, lastName: true }
             },
             seasons: {
-              where: (seasons, { eq }) => eq(seasons.isActive, true),
+              where: eq(seasons.isActive, true),
             },
           },
         },

@@ -157,7 +157,7 @@ export default async function ProfilePage() {
                         <span className="text-sm">Height</span>
                       </div>
                       <span className="text-sm text-muted-foreground">
-                        {Math.floor(profile.heightInches / 12)}'{profile.heightInches % 12}"
+                        {Math.floor(profile.heightInches / 12)}&apos;{profile.heightInches % 12}&quot;
                       </span>
                     </div>
                   )}

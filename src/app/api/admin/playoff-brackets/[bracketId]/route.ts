@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth-utils'
 import { db } from '@/db'
-import { playoffBrackets } from '@/db/schema'
+import { playoffBrackets, playoffTeams, playoffGames } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function PUT(request: NextRequest, { params }: { params: { bracketId: string } }) {
@@ -15,9 +15,8 @@ export async function PUT(request: NextRequest, { params }: { params: { bracketI
         name,
         description,
         bracketType,
-        startDate: startDate ? new Date(startDate) : null,
-        endDate: endDate ? new Date(endDate) : null,
-        updatedData: new Date(),
+        startDate: startDate || null,
+        endDate: endDate || null,
       })
       .where(eq(playoffBrackets.id, params.bracketId))
       .returning()

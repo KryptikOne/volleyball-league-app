@@ -33,19 +33,15 @@ export async function POST(request: NextRequest) {
           seasonId,
           homeTeamId: seasonTeams[i].id,
           awayTeamId: seasonTeams[j].id,
-          gameDate: new Date(Date.now() + (gamesToCreate.length * 7 * 24 * 60 * 60 * 1000)).toISOString(), // Space games 1 week apart
+          gameDate: new Date(Date.now() + (gamesToCreate.length * 7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0], // Space games 1 week apart
           status: 'scheduled' as const,
-          createdDate: new Date(),
-          updatedDate: new Date(),
         })
         gamesToCreate.push({
           seasonId,
           homeTeamId: seasonTeams[j].id,
           awayTeamId: seasonTeams[i].id,
-          gameDate: new Date(Date.now() + (gamesToCreate.length * 7 * 24 * 60 * 60 * 1000)).toISOString(), // Space games 1 week apart
+          gameDate: new Date(Date.now() + (gamesToCreate.length * 7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0], // Space games 1 week apart
           status: 'scheduled' as const,
-          createdDate: new Date(),
-          updatedDate: new Date(),
         })
       }
     }

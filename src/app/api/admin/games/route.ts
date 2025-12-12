@@ -65,15 +65,13 @@ export async function POST(request: NextRequest) {
         seasonId,
         homeTeamId,
         awayTeamId,
-        gameDate: new Date(gameDate),
+        gameDate: gameDate,
         gameTime: gameTime || null,
         courtLocation: courtLocation || null,
         status: status || 'scheduled',
         homeTeamScore: homeTeamScore || null,
         awayTeamScore: awayTeamScore || null,
         notes: notes || null,
-        createdDate: new Date(),
-        updatedDate: new Date(),
       })
       .returning()
 

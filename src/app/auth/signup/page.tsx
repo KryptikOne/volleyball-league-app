@@ -86,7 +86,7 @@ export default function SignUpPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center">Create Account</CardTitle>
           <CardDescription className="text-center">
-            Join our volleyball community<br />We're a fun-loving bunch that loves to play and socialize!
+            Join our volleyball community<br />We&apos;re a fun-loving bunch that loves to play and socialize!
           </CardDescription>
         </CardHeader>
         <CardContent>

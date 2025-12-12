@@ -58,8 +58,6 @@ export async function POST(request: NextRequest) {
         teamCode,
         wins: 0,
         losses: 0,
-        createdDate: new Date(),
-        updatedDate: new Date(),
       })
       .returning();
 

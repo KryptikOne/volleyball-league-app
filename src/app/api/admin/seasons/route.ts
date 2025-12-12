@@ -48,13 +48,11 @@ export async function POST(request: NextRequest) {
         leagueId,
         name,
         description: description || null,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-        registrationStartDate: registrationStartDate ? new Date(registrationStartDate) : null,
-        registrationEndDate: registrationEndDate ? new Date(registrationEndDate) : null,
+        startDate,
+        endDate,
+        registrationStartDate: registrationStartDate || null,
+        registrationEndDate: registrationEndDate || null,
         maxTeams: maxTeams || null,
-        createdDate: new Date(),
-        updatedData: new Date(),
       })
       .returning()
 

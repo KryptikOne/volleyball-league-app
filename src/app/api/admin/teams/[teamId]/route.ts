@@ -14,8 +14,6 @@ export async function PUT(request: NextRequest, { params }: { params: { teamId: 
       .set({
         seasonId,
         name,
-        description,
-        updatedData: new Date(),
       })
       .where(eq(teams.id, params.teamId))
       .returning()

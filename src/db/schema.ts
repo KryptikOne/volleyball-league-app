@@ -347,10 +347,10 @@ export const insertLeagueSchema = createInsertSchema(leagues, {
 })
 
 export const insertSeasonSchema = createInsertSchema(seasons, {
-  startDate: z.string().transform((str) => new Date(str)),
-  endDate: z.string().transform((str) => new Date(str)),
-  registrationStartDate: z.string().transform((str) => new Date(str)).optional(),
-  registrationEndDate: z.string().transform((str) => new Date(str)).optional(),
+  startDate: z.string(),
+  endDate: z.string(),
+  registrationStartDate: z.string().optional(),
+  registrationEndDate: z.string().optional(),
   playoffFormat: z.enum(['single_elimination', 'double_elimination', 'round_robin']).optional(),
   isActive: z.boolean().default(true),
 }).omit({
@@ -373,7 +373,7 @@ export const insertTeamSchema = createInsertSchema(teams, {
 })
 
 export const insertGameSchema = createInsertSchema(games, {
-  gameDate: z.string().transform((str) => new Date(str)),
+  gameDate: z.string(),
   gameType: z.enum(['regular', 'playoff', 'championship']).optional(),
   status: z.enum(['scheduled', 'in_progress', 'completed', 'cancelled', 'postponed']).optional(),
 }).omit({
@@ -385,8 +385,8 @@ export const insertGameSchema = createInsertSchema(games, {
 export const insertPlayoffBracketSchema = createInsertSchema(playoffBrackets, {
   bracketType: z.enum(['single_elimination', 'double_elimination', 'round_robin']),
   status: z.enum(['setup', 'in_progress', 'completed']).default('setup'),
-  startDate: z.string().transform((str) => new Date(str)).optional(),
-  endDate: z.string().transform((str) => new Date(str)).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 }).omit({
   id: true,
   createdDate: true,
@@ -402,7 +402,7 @@ export const insertPlayoffTeamSchema = createInsertSchema(playoffTeams, {
 })
 
 export const insertPlayoffGameSchema = createInsertSchema(playoffGames, {
-  gameDate: z.string().transform((str) => new Date(str)).optional(),
+  gameDate: z.string().optional(),
   status: z.enum(['scheduled', 'in_progress', 'completed', 'cancelled', 'postponed']).default('scheduled'),
 }).omit({
   id: true,

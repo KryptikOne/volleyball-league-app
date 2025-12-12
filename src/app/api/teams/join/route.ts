@@ -40,7 +40,8 @@ export async function POST(request: NextRequest) {
 
     // Check roster size
     const activePlayersCount = team.teamPlayers.filter(player => player.isActive).length
-    if (activePlayersCount >= team.maxRosterSize) {
+    const maxRoster = team.maxRosterSize ?? 12
+    if (activePlayersCount >= maxRoster) {
       return NextResponse.json({ error: 'Team roster is full' }, { status: 400 })
     }
 

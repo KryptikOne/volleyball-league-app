@@ -22,12 +22,11 @@ export async function PUT(request: NextRequest, { params }: { params: { seasonId
       .set({
         name,
         description,
-        startDate: new Date(startDate).toISOString(),
-        endDate: new Date(endDate).toISOString(),
-        registrationStartDate: registrationStartDate ? new Date(registrationStartDate).toISOString() : null,
-        registrationEndDate: registrationEndDate ? new Date(registrationEndDate).toISOString() : null,
+        startDate,
+        endDate,
+        registrationStartDate: registrationStartDate || null,
+        registrationEndDate: registrationEndDate || null,
         maxTeams,
-        updatedDate: new Date(),
       })
       .where(eq(seasons.id, params.seasonId))
       .returning()

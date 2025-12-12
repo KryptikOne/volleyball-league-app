@@ -68,8 +68,12 @@ export async function POST(request: NextRequest, { params }: { params: { bracket
     const sortedTeams = teamDetails
       .filter(team => team !== undefined)
       .sort((a, b) => {
-        const aWinPercentage = a.wins + a.losses > 0 ? a.wins / (a.wins + a.losses) : 0
-        const bWinPercentage = b.wins + b.losses > 0 ? b.wins / (b.wins + b.losses) : 0
+        const aWins = a.wins ?? 0
+        const aLosses = a.losses ?? 0
+        const bWins = b.wins ?? 0
+        const bLosses = b.losses ?? 0
+        const aWinPercentage = aWins + aLosses > 0 ? aWins / (aWins + aLosses) : 0
+        const bWinPercentage = bWins + bLosses > 0 ? bWins / (bWins + bLosses) : 0
         return bWinPercentage - aWinPercentage // Descending order (best first)
       })
 
@@ -79,8 +83,6 @@ export async function POST(request: NextRequest, { params }: { params: { bracket
       teamId: team.id,
       seed: index + 1, // Seed 1 = best team, seed 2 = second best, etc.
       isActive: true,
-      createdDate: new Date(),
-      updatedData: new Date(),
     }))
 
     const insertedTeams = await db.insert(playoffTeams).values(teamsToInsert).returning()
@@ -114,7 +116,6 @@ export async function PUT(request: NextRequest, { params }: { params: { bracketI
           .set({
             seed: team.seed,
             isActive: team.isActive ?? true,
-            updatedData: new Date(),
           })
           .where(eq(playoffTeams.id, team.id))
       }

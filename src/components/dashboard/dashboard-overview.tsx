@@ -127,7 +127,7 @@ export function DashboardOverview({ user }: DashboardOverviewProps) {
           Welcome back, {user.name || user.email}!
         </h1>
         <p className="text-muted-foreground">
-          Here's an overview of your volleyball league activities.
+          Here&apos;s an overview of your volleyball league activities.
         </p>
       </div>
 

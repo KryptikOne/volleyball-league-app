@@ -43,8 +43,6 @@ export async function POST(request: NextRequest) {
         description: description || null,
         isActive: isActive ?? true,
         administratorId: administratorId || null,
-        createdDate: new Date(),
-        updatedDate: new Date(),
       })
       .returning()
 

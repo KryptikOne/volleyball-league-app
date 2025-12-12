@@ -57,10 +57,8 @@ export async function POST(request: NextRequest) {
         description: description || null,
         bracketType,
         status: 'setup',
-        startDate: startDate ? new Date(startDate) : null,
-        endDate: endDate ? new Date(endDate) : null,
-        createdDate: new Date(),
-        updatedData: new Date(),
+        startDate: startDate || null,
+        endDate: endDate || null,
       })
       .returning()
 

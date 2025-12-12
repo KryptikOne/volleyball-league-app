@@ -26,14 +26,13 @@ export async function PUT(request: NextRequest, { params }: { params: { gameId: 
         seasonId,
         homeTeamId,
         awayTeamId,
-        gameDate: new Date(gameDate).toISOString(),
+        gameDate,
         gameTime,
         courtLocation,
         status,
         homeTeamScore,
         awayTeamScore,
         notes,
-        updatedDate: new Date(),
       })
       .where(eq(games.id, params.gameId))
       .returning()

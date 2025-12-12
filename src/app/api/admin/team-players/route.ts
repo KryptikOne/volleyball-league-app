@@ -21,8 +21,6 @@ export async function POST(request: NextRequest) {
         position: position || null,
         jerseyNumber: jerseyNumber || null,
         isActive: true,
-        createdDate: new Date(),
-        updatedData: new Date(),
       })
       .returning()
 

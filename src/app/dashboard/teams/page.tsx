@@ -64,7 +64,7 @@ export default async function TeamsPage() {
                 <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium mb-2">No teams yet</h3>
                 <p className="text-muted-foreground mb-4">
-                  You're not part of any teams. Create a team or join an existing one.
+                  You&apos;re not part of any teams. Create a team or join an existing one.
                 </p>
                 <div className="space-x-2">
                   <Button variant="outline">Join Team</Button>
